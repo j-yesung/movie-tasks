@@ -1,225 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>댓글기능</title>
     <link rel="stylesheet" href="default.css" />
     <script src="input.js" defer></script>
     <style>
-        /*default 대충 CSS 함*/
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /*댓글 layout Start*/
+      .comment-container {
+        max-width: 768px;
+        border-top: 1px solid rgba(55, 53, 47, 0.09);
+        margin-bottom: 8px;
+        overflow: hidden;
+      }
 
-        body {
-            display: grid;
-            place-content: center center;
-            height: 100vh;
-        }
+      .comment-view {
+        width: 100%;
+        margin: 0 auto;
+      }
 
-        ol,
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
+      .comment-view > div {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        position: relative;
+        font-size: 14px;
+        margin: 14px -14px;
+      }
 
-        a,
-        button {
-            all: unset;
-        }
+      /*댓글 layout End*/
 
-        img {
-            vertical-align: top;
-            width: 100%;
-        }
+      /*댓글기능 정보 Start*/
+      .comment-info {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 6px 16px 0px 18px;
+        position: relative;
+      }
 
-        /*댓글 layout Start*/
-        .comment-container {
-            max-width: 768px;
-            border-top: 1px solid rgba(55, 53, 47, 0.09);
-            margin-bottom: 8px;
-            overflow: hidden;
-        }
+      .comment-info_firstName {
+        margin-right: 10px;
+        margin-top: 2px;
+        background: white;
+        border-radius: 100%;
+        box-shadow: rgba(15, 15, 15, 0.1) 0px 2px 4px;
+        outline: rgba(227, 226, 224, 0.5) solid 1px;
+        outline-offset: -1px;
+        box-sizing: content-box;
+        border-radius: 100%;
+        line-height: 20px;
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        text-align: center;
+        font-size: 11px;
+        background: white;
+        user-select: none;
+        color: rgb(145, 145, 142);
+        opacity: 1;
+      }
 
-        .comment-view {
-            width: 100%;
-            margin: 0 auto;
-        }
+      .comment-date {
+        font-size: 12px;
+        line-height: 16px;
+        color: rgba(55, 53, 47, 0.5);
+        margin: 0px 6px;
+        flex-basis: 140px;
+        white-space: normal;
+        flex-grow: 1;
+        display: inline;
+      }
 
-        .comment-view>div {
-            display: flex;
-            align-items: flex-start;
-            flex-direction: column;
-            position: relative;
-            font-size: 14px;
-            margin: 14px -14px;
-        }
+      .comment-func_container {
+        display: flex;
+        padding: 8px 10px;
+        gap: 8px;
+        position: absolute;
+        top: 0;
+        right: 50px;
+        z-index: 99;
+        opacity: 0.5;
+        border-radius: 20px;
+      }
+      .comment-func_container:hover {
+        transition: all 0.3s;
+        background-color: bisque;
+        opacity: 1;
+      }
 
-        /*댓글 layout End*/
+      .comment-func_container span {
+        padding: 2px 4px;
+      }
+      .comment-func_container span:hover {
+        transition: all 0.3s;
+        color: rgb(86, 86, 202);
+        cursor: pointer;
+      }
 
-        /*댓글기능 정보 Start*/
-        .comment-info {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 6px 16px 0px 18px;
-            position: relative;
-        }
+      /*댓글기능 정보 End*/
 
-        .comment-info_firstName {
-            margin-right: 10px;
-            margin-top: 2px;
-            background: white;
-            border-radius: 100%;
-            box-shadow: rgba(15, 15, 15, 0.1) 0px 2px 4px;
-            outline: rgba(227, 226, 224, 0.5) solid 1px;
-            outline-offset: -1px;
-            box-sizing: content-box;
-            border-radius: 100%;
-            line-height: 20px;
-            width: 20px;
-            height: 20px;
-            overflow: hidden;
-            text-align: center;
-            font-size: 11px;
-            background: white;
-            user-select: none;
-            color: rgb(145, 145, 142);
-            opacity: 1;
-        }
+      /*댓글 수정,삭제 css Start*/
+      .comment-view {
+        position: relative;
+      }
 
-        .comment-date {
-            font-size: 12px;
-            line-height: 16px;
-            color: rgba(55, 53, 47, 0.5);
-            margin: 0px 6px;
-            flex-basis: 140px;
-            white-space: normal;
-            flex-grow: 1;
-            display: inline;
-        }
+      /*댓글 text Start*/
+      .comment-text_container {
+        padding: 0px 16px 3px;
+        color: rgb(55, 53, 47);
+        overflow: hidden;
+        padding-left: 0;
+        margin-left: 16px;
+        width: 100%;
+      }
 
-        .comment-func_container {
-            display: flex;
-            padding: 8px 10px;
-            gap: 8px;
-            position: absolute;
-            top: 0;
-            right: 50px;
-            z-index: 99;
-            opacity: 0.5;
-            border-radius: 20px;
-        }
+      .comment-text {
+        max-width: 768px;
+        width: 100%;
+        padding-top: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        caret-color: rgb(55, 53, 47);
+        cursor: text;
+        padding-left: 32px;
+      }
 
-        .comment-func_container:hover {
-            transition: all 0.3s;
-            background-color: bisque;
-            opacity: 1;
-        }
+      /*댓글 수정 css*/
+      .comment-text_container.update-text {
+        max-width: calc(720px * (2 / 3));
+        position: relative;
+      }
+      .comment-text.update-text {
+        border: none;
+        line-height: 1.4;
+        width: calc(646px * (2 / 3));
+        margin-top: 8px;
+        padding-top: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        caret-color: rgb(55, 53, 47);
+        cursor: text;
+        padding-left: 0;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+        resize: none;
+        font-size: 14px;
+      }
+      .comment-text.update-text:focus {
+        border: none;
+        outline: none;
+        border-bottom: 2px solid rgba(55, 53, 47, 0.09);
+      }
 
-        .comment-func_container span {
-            padding: 2px 4px;
-        }
+      .comment-text.update-text::-webkit-scrollbar {
+        width: 3px;
+      }
 
-        .comment-func_container span:hover {
-            transition: all 0.3s;
-            color: rgb(86, 86, 202);
-            cursor: pointer;
-        }
-
-        /*댓글기능 정보 End*/
-
-        /*댓글 수정,삭제 css Start*/
-        .comment-view {
-            position: relative;
-        }
-
-        /*댓글 text Start*/
-        .comment-text_container {
-            padding: 0px 16px 3px;
-            color: rgb(55, 53, 47);
-            overflow: hidden;
-            padding-left: 0;
-            margin-left: 16px;
-            width: 100%;
-        }
-
-        .comment-text {
-            max-width: 768px;
-            width: 100%;
-            padding-top: 8px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            caret-color: rgb(55, 53, 47);
-            cursor: text;
-            padding-left: 32px;
-        }
-
-        /*댓글 수정 css*/
-        .comment-text_container.update-text {
-            max-width: calc(880px * (2 / 3));
-            position: relative;
-        }
-
-        .comment-text.update-text {
-            border: none;
-            line-height: 1.4;
-            width: calc(768px * (2 / 3));
-            margin-top: 8px;
-            padding-top: 8px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            caret-color: rgb(55, 53, 47);
-            cursor: text;
-            padding-left: 0;
-            border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-            resize: none;
-            font-size: 14px;
-        }
-
-        .comment-text.update-text:focus {
-            border: none;
-            outline: none;
-            border-bottom: 2px solid rgba(55, 53, 47, 0.09);
-        }
-
-        .comment-text.update-text::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        /*댓글 수정 등록 아이콘*/
-        .update-btn {
-            position: absolute;
-            bottom: 6px;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 12px;
-            width: 20px;
-            height: 20px;
-            vertical-align: top;
-            text-align: center;
-            color: #929bab;
-            z-index: 11;
-            border: 1px solid rgb(86, 86, 202);
-            border-radius: 100%;
-        }
-
-        .update-btn .fa-solid.fa-arrow-up {
-            font-size: 18px;
-        }
-
-        .update-btn.active {
-            color: rgb(30, 48, 80);
-            cursor: pointer;
-        }
-
-        /* .fa-solid.fa-arrow-up {
+      /*댓글 수정 등록 아이콘*/
+      .update-btn {
+        position: absolute;
+        bottom: 6px;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 4px;
+        width: 20px;
+        height: 20px;
+        vertical-align: top;
+        text-align: center;
+        color: #929bab;
+        z-index: 11;
+        border: 1px solid rgb(86, 86, 202);
+        border-radius: 100%;
+      }
+      .update-btn .fa-solid.fa-arrow-up {
+        font-size: 18px;
+      }
+      .update-btn.active {
+        color: rgb(30, 48, 80);
+        cursor: pointer;
+      }
+      /* .fa-solid.fa-arrow-up {
 
         }
 
@@ -227,145 +190,111 @@
 
         } */
 
-        /*댓글 달기 css*/
-        .input-container {
-            margin-top: 12px;
-            padding: 14px 0;
-        }
+      /*댓글 달기 css*/
+      .input-container {
+        margin-top: 12px;
+        padding: 14px 0;
+      }
+      .input-container input {
+        border: none;
+        padding-bottom: 5px;
+        width: 120px;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+      }
 
-        .input-container input {
-            border: none;
-            padding-bottom: 5px;
-            width: 120px;
-            border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-        }
+      .input-container input:focus {
+        outline: none;
+        border-bottom: 1px solid rgb(145, 145, 142);
+      }
 
-        .input-container input:focus {
-            outline: none;
-            border-bottom: 1px solid rgb(145, 145, 142);
-        }
+      .user-info-container {
+        display: flex;
+        gap: 10px;
+      }
+      .comment-text.add-comment {
+        border: none;
+        line-height: 1.4;
+        width: calc(768px * (2 / 3));
+        margin-top: 8px;
+        padding-top: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        caret-color: rgb(55, 53, 47);
+        cursor: text;
+        padding-left: 0;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+        resize: none;
+        font-size: 14px;
+      }
+      .comment-text.add-comment:focus {
+        border: none;
+        outline: none;
+        border-bottom: 2px solid rgba(55, 53, 47, 0.09);
+      }
 
-        .user-info-container {
-            display: flex;
-            gap: 10px;
-        }
+      .comment-text.add-comment::-webkit-scrollbar {
+        width: 3px;
+      }
+      /*댓글 달기 CSS End*/
 
-        .comment-text.add-comment {
-            border: none;
-            line-height: 1.4;
-            width: calc(768px * (2 / 3));
-            margin-top: 8px;
-            padding-top: 8px;
-            white-space: pre-wrap;
-            word-break: break-word;
-            caret-color: rgb(55, 53, 47);
-            cursor: text;
-            padding-left: 0;
-            border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-            resize: none;
-            font-size: 14px;
-        }
+      /*댓글 달기 btn*/
 
-        .comment-text.add-comment:focus {
-            border: none;
-            outline: none;
-            border-bottom: 2px solid rgba(55, 53, 47, 0.09);
-        }
-
-        .comment-text.add-comment::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        /*댓글 달기 CSS End*/
-
-        /*댓글 달기 btn*/
-
-        .form-btn {
-            opacity: 0.4;
-        }
-
-        .form-btn.submit {
-            opacity: 1;
-            cursor: pointer;
-            color: rgb(86, 86, 202);
-        }
+      .form-btn {
+        opacity: 0.4;
+      }
+      .form-btn.submit {
+        opacity: 1;
+        cursor: pointer;
+        color: rgb(86, 86, 202);
+      }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-</head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <ul id="comment">
-            <!-- 댓글 올리면 보일 template -->
-            <!-- <li class="comment-container">
-          <div class="comment-view">
-            <div class="comment-view-container">
-              <div class="comment-info">
-                <div class="comment-info_firstName">최</div>
-                <div class="comment-info_fullInfo">
-                  <span class="fullName">최예지</span>
-                  <div class="comment-date">9월 18일</div>
-                </div>
-                <div class="comment-func_container">
-                  <span class="comment-delte_container">
-                    <i class="fa-solid fa-trash"></i>
-                  </span>
-                  <span class="comment-edit_container">
-                    <i class="fa-solid fa-pen"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="comment-text_container">
-                <div class="comment-text">
-                  멋있어요 너무 안녕하세요 근데요
-                  ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ
-                </div>
-              </div>
-            </div>
-          </div>
-        </li> -->
-
-            <!-- 수정시 보일 template -->
-            <li class="comment-container">
-                <div class="comment-view">
-                    <div class="comment-view-container">
-                        <div class="comment-info">
-                            <div class="comment-info_firstName">최</div>
-                            <div class="comment-info_fullInfo">
-                                <div class="comment-date">9월 18일</div>
-                            </div>
-                        </div>
-                        <div class="comment-text_container update-text">
-                            <span class="update-btn">
-                                <i class="fa-solid fa-arrow-up"></i>
-                            </span>
-                            <textarea type="text" class="comment-text update-text"
-                                oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"'></textarea>
-                        </div>
-                    </div>
-                </div>
-            </li>
-        </ul>
+      <ul id="comment">
+       
+      </ul>
     </div>
 
     <form class="input-container">
-        <div class="user-info-container">
-            <!-- 이름 input -->
-            <input type="text" placeholder="실명제 합시다" maxlength="8자리" onfocus="this.placeholder=''"
-                onblur="this.placeholder='실명제합시다'" class="input-name" />
-            <!-- 비번 input -->
-            <input type="password" placeholder="비번 4자리 하자" maxlength="4" onfocus="this.placeholder=''"
-                onblur="this.placeholder='윤하의 486(0)'" class="input-pwd" />
-        </div>
+      <div class="user-info-container">
+        <!-- 이름 input -->
+        <input
+          type="text"
+          placeholder="실명제 합시다"
+          maxlength="8자리"
+          onfocus="this.placeholder=''"
+          onblur="this.placeholder='실명제합시다'"
+          class="input-name"
+        />
+        <!-- 비번 input -->
+        <input
+          type="password"
+          placeholder="비번 4자리 하자"
+          maxlength="4"
+          onfocus="this.placeholder=''"
+          onblur="this.placeholder='윤하의 486(0)'"
+          class="input-pwd"
+        />
+      </div>
 
-        <!-- 댓글 쓰기 -->
-        <textarea type="text" class="comment-text add-comment" placeholder="댓글을 써볼까?"
-            oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"' onfocus="this.placeholder=''"
-            onblur="this.placeholder='댓글을 써볼까?'"></textarea>
-        <button type="submit" class="form-btn">
-            <i class="fa-solid fa-arrow-up"></i>
-        </button>
+      <!-- 댓글 쓰기 -->
+      <textarea
+        type="text"
+        class="comment-text add-comment"
+        placeholder="댓글을 써볼까?"
+        oninput='this.style.height = ""; this.style.height = this.scrollHeight + "px"'
+        onfocus="this.placeholder=''"
+        onblur="this.placeholder='댓글을 써볼까?'"
+      ></textarea>
+      <button type="submit" class="form-btn">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
     </form>
-</body>
-
+  </body>
 </html>
