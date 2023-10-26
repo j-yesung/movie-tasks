@@ -1,16 +1,19 @@
 import { createModal } from '../js/modal.js';
 
-const $logo = document.querySelector('header');
+const $header = document.querySelector('header');
+const $container = document.querySelector('.container');
+const $sortSelect = document.getElementById('sortingSelect');
 const $searchInput = document.querySelector('#search-input');
 const $searchBtn = document.querySelector('.icon');
-const $container = document.querySelector('.container');
-const defaultUrl = 'https://kobis.or.kr/common/mast/movie';
 const checkText = new RegExp(/\s/g);
 
+const defaultUrl = 'https://kobis.or.kr/common/mast/movie';
 const key = '98b425383d86d1c61535d64d720ee01e';
 const date = '20220101';
 const url1 = '../data/poster.json';
 const url2 = `http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${key}&targetDt=${date}`;
+let finalData = [];
+
 /**
  * 데이터 불러오기
  * @param {*} url 불러올 url 경로
@@ -31,54 +34,55 @@ async function mergeData(mData) {
   const mergedData = { data1, data2 };
   const imgData = mergedData.data1.results; // 이미지 경로가 들어 있는 배열
   const movieListData = mergedData.data2.boxOfficeResult.dailyBoxOfficeList;
-  const finalData = movieListData.map((item, index) => {
-    return { ...item, poster_path: imgData[index].poster_path }; // 데이터 병합
+  const resultData = movieListData.map((item, index) => {
+    return { ...item, poster_path: defaultUrl + imgData[index].poster_path }; // 데이터 병합
   });
 
-  return finalData;
+  return resultData;
 }
 /**
  * 영화 리스트 만들기
  * @param {*} listData fetch에서 불러온 최초 데이터
  */
 async function appendMovieList(listData) {
-  listData.forEach(item => {
+  let numbers = Array.from({ length: 10 }, (_, index) => -5 + index);
+
+  if (listData.length < 9) {
+    numbers = Array.from({ length: 10 }, (_, index) => 0 + index);
+    $container.insertAdjacentHTML(
+      'afterbegin',
+      `<img src="../images/logo.png" class="card" id="logo" style="--i: 1" />`,
+    );
+  } else {
+    $container.insertAdjacentHTML(
+      'afterbegin',
+      `<img src="../images/logo.png" class="card" id="logo" style="--i: 5" />`,
+    );
+  }
+
+  listData.forEach((item, i) => {
     let divArea = `
-      <div class="card">
-        <img src="${defaultUrl}${item.poster_path}" width="200" height="300"/>
-        <div class="content">
-          <h2 class="title">${item.movieNm}</h2>
-        </div>
-      </div>
-    `;
-    $container.insertAdjacentHTML('beforeend', divArea);
+			<img src="${item.poster_path}" class="card" style="--i: ${numbers[i]}" />
+		`;
+    $container.insertAdjacentHTML('afterbegin', divArea);
   });
 }
+
 /**
- * 1. Promise.all() 메서드를 이용하여 fetchData() 함수 호출
- * 2. 리턴받은 데이터 mergeData() 함수로 병합
- * 3. 병합한 데이터를 가지고 [영화 리스트 함수], [모달 함수], [검색 기능 이벤트 리스너] 호출
- * [해야 할 것] finalData 전역으로 빼보기
+ * 영화 리스트 및 데이터 병합 함수 호출
  */
 (async function getMovieList() {
   try {
     const result = await Promise.all([fetchData(url1), fetchData(url2)]);
-    const finalData = await mergeData(result);
+    finalData = await mergeData(result);
 
     await appendMovieList(finalData);
     await createModal(finalData);
-
-    $searchBtn.addEventListener('click', () => searchTitle(finalData));
-    $searchInput.addEventListener('change', () => $searchBtn.click()); // 엔터키 이벤트
-
-    document.getElementById('sortingSelect').addEventListener('change', e => {
-      if (e.target.value === '영화 제목') updateMovieList(sortByNameOrder(finalData));
-      if (e.target.value === '누적 관객수') updateMovieList(sortSalesOrder(finalData));
-    });
   } catch (error) {
-    console.log(error);
+    console.log('에러 발생\n', error);
   }
 })();
+
 /**
  * 영화 리스트 검색 기능
  * @param {*} searchData fetch에서 불러온 최초 데이터
@@ -88,20 +92,22 @@ async function searchTitle(searchData) {
   if ($searchInput.value === '') return alert('제목을 입력해 주세요.');
 
   const $card = document.querySelectorAll('.card');
+  let arr = [];
 
   for (let i = 0; i < $card.length; i++) {
     $card[i].style.display = 'none';
   }
 
-  searchData.forEach((item, index) => {
+  searchData.forEach(item => {
     let serachText = item.movieNm.toUpperCase();
 
     if (serachText.replace(checkText, '').indexOf($searchInput.value.replace(checkText, '').toUpperCase()) !== -1) {
-      $card[index].style.display = 'block';
+      arr.push(item);
+      updateMovieList(arr);
     }
   });
 
-  $searchInput.value = '';
+  $searchInput.value = ''; // input 초기화
 }
 
 /**
@@ -121,7 +127,7 @@ function sortSalesOrder(sortData) {
 }
 
 /**
- *
+ * 컨테이너 HTML 업데이트
  * @param {*} updateData 정렬된 데이터
  */
 async function updateMovieList(updateData) {
@@ -130,4 +136,31 @@ async function updateMovieList(updateData) {
   await createModal(updateData);
 }
 
-$logo.addEventListener('click', () => window.location.reload());
+/**
+ * 이벤트 리스너들
+ */
+$header.addEventListener('click', () => window.location.reload());
+$container.addEventListener('mouseover', function () {
+  this.classList.add('hovered');
+
+  const $logo = document.getElementById('logo');
+  const $cardBtn = document.querySelectorAll('.card');
+  $cardBtn.forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.id !== 'logo') item.classList.add('active');
+
+      // 클릭한 대상 말고 다른 요소들은 active 클래스 제거
+      $cardBtn.forEach(otherItem => {
+        if (otherItem !== item) otherItem.classList.remove('active');
+      });
+    });
+  });
+
+  $logo.addEventListener('click', () => $container.classList.remove('hovered'));
+});
+$searchBtn.addEventListener('click', () => searchTitle(finalData));
+$searchInput.addEventListener('change', () => $searchBtn.click());
+$sortSelect.addEventListener('change', e => {
+  if (e.target.value === '영화 제목') updateMovieList(sortByNameOrder(finalData));
+  if (e.target.value === '누적 관객수') updateMovieList(sortSalesOrder(finalData));
+});

@@ -1,13 +1,24 @@
-#modalOpenButton,
-#modalCloseButton {
-  cursor: pointer;
-}
 /* 닫기 버튼 */
 #modalCloseButton {
   position: absolute;
-  top: 10%;
-  left: 74%;
+  top: 3%;
+  left: 92%;
   z-index: 10;
+  display: inline-block;
+  display: inline;
+  cursor: pointer;
+  border: none;
+  background: #ffffff;
+}
+#modalCloseButton:after {
+  display: inline-block;
+  content: '\00d7';
+  font-size: 20pt;
+}
+
+#modalTitle {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 #modalContainer {
@@ -26,9 +37,10 @@
 #modalContent {
   position: relative;
   background-color: #ffffff;
-  width: 700px;
+  width: 472px;
+  /* width: 700px; */
   height: 800px;
-  padding: 15px;
+  padding: 50px;
   box-shadow: 0 6px 11px 3px #00000033;
   border-radius: 20px;
 }
@@ -44,10 +56,14 @@
   /* top: 50px; */
 }
 
-/* #modalImgBox {
-  position: absolute;
-} */
-
 #movieContent {
-  float: right;
+  /* float: left; */
+  display: flex;
+  justify-content: center;
+}
+
+p {
+  position: relative;
+  margin-bottom: 10px;
+  top: 90%;
 }

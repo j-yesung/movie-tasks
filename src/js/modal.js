@@ -1,8 +1,5 @@
-export { createModal };
-
-const modalCloseButton = document.getElementById('modalCloseButton');
-const modalContainer = document.getElementById('modalContainer');
-const modalContent = document.getElementById('modalContent');
+const $modalContainer = document.getElementById('modalContainer');
+const $modalContent = document.getElementById('modalContent');
 
 // 관객수 표기
 function formatPopulation(number) {
@@ -28,45 +25,54 @@ function formatNumber(number) {
 }
 
 // 모달 생성
-async function createModal(modalData) {
+export async function createModal(modalData) {
   const $cardInfo = document.querySelectorAll('.card');
 
   $cardInfo.forEach(item => {
-    item.addEventListener('click', () => {
-      openModal();
-      const movieName = item.children[1].children[0].textContent;
-      const result = modalData.find(result => result.movieNm === movieName);
+    if (item.id !== 'logo') {
+      item.addEventListener('click', () => {
+        openModal();
+        const imgSrc = item.src;
+        const result = modalData.find(result => result.poster_path === imgSrc);
 
-      modalContent.innerHTML = ''; // 기존 내용 초기화
+        $modalContent.innerHTML = ''; // 기존 내용 초기화
 
-      if (result) {
-        modalContent.innerHTML = `
-              <h3>${result.movieNm}</h3>
-              <img src="${item.children[0].getAttribute('src')}" />
-              <div id="movieContent">
-                <p>${formatPopulation(result.audiAcc)}</p>
-                <p>${formatNumber(result.salesAcc)}</p>
-              </div>
-            `;
-        modalContainer.appendChild(modalContent);
-      }
-    });
+        if (result) {
+          $modalContent.innerHTML = `
+						<h3 id="modalTitle">${result.movieNm}</h3>
+						<div id="movieContent">
+							<img src="${result.poster_path}" />
+						</div>
+						<p>${formatPopulation(result.audiAcc)}</p>
+						<p>${formatNumber(result.salesAcc)}</p>
+						<button id="modalCloseButton"></button>
+					`;
+          $modalContainer.appendChild($modalContent);
+        }
+        // 모달 닫기
+        document.getElementById('modalCloseButton').addEventListener('click', () => {
+          closeModal();
+        });
+      });
+    }
   });
 }
 
 // 모달 ON/OFF
-function closeModal() {
-  modalContainer.classList.add('hidden');
+export function closeModal() {
+  const $cardOtherBtn = document.querySelectorAll('.card');
+
+  $modalContainer.classList.add('hidden');
+  $cardOtherBtn.forEach(otherItem => otherItem.classList.remove('active'));
 }
 function openModal() {
-  modalContainer.classList.remove('hidden');
+  $modalContainer.classList.remove('hidden');
 }
 
-// 모달 닫기
-modalCloseButton.addEventListener('click', () => closeModal());
-// 모달 내부를 클릭해도 모달이 닫히지 않도록 이벤트 전파 중지
-modalContent.addEventListener('click', e => e.stopPropagation());
-// 모달 외부 클릭 시 닫기
+/**
+ * 이벤트 리스너들
+ */
+$modalContent.addEventListener('click', e => e.stopPropagation());
 document.addEventListener('click', e => {
-  if (e.target === modalContainer) closeModal();
+  if (e.target === $modalContainer) closeModal();
 });
