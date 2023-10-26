@@ -39,14 +39,14 @@ export async function createModal(modalData) {
 
         if (result) {
           $modalContent.innerHTML = `
-						<h3 id="modalTitle">${result.movieNm}</h3>
-						<div id="movieContent">
-							<img src="${result.poster_path}" />
-						</div>
-						<p>${formatPopulation(result.audiAcc)}</p>
-						<p>${formatNumber(result.salesAcc)}</p>
-						<button id="modalCloseButton"></button>
-					`;
+            <h3 id="modalTitle">${result.movieNm}</h3>
+            <div id="movieContent">
+              <img src="${result.poster_path}" />
+            </div>
+            <p>${formatPopulation(result.audiAcc)}</p>
+            <p>${formatNumber(result.salesAcc)}</p>
+            <button id="modalCloseButton"></button>
+          `;
           $modalContainer.appendChild($modalContent);
         }
         // 모달 닫기

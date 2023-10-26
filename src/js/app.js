@@ -61,10 +61,10 @@ async function appendMovieList(listData) {
   }
 
   listData.forEach((item, i) => {
-    let divArea = `
-			<img src="${item.poster_path}" class="card" style="--i: ${numbers[i]}" />
-		`;
-    $container.insertAdjacentHTML('afterbegin', divArea);
+    let imgArea = `
+      <img src="${item.poster_path}" class="card" style="--i: ${numbers[i]}" />
+    `;
+    $container.insertAdjacentHTML('afterbegin', imgArea);
   });
 }
 
