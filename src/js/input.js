@@ -1,33 +1,11 @@
-// const $commentContainer = document.querySelector('#comment');
-// const $form = document.querySelector('.input-container');
-// const $commentText = document.querySelector('.comment-text.add-comment');
-// const $formSubmitBtn = document.querySelector('.form-btn');
-// const $pagingBtnContainer = document.querySelector('.buttons');
 let localStorageArray = [];
 
-//pagiNation 위한 변수들
-
-// 브라우저 키면 처음 그려주기
-// initPrint();
-
-// 코멘트 한글자라도 있으면 버튼 활성화,댓글 하나라도 있으면 전송버튼 활성화 시켜서 UX로 알려주자 - 전역으로 해줘야징 ㅎㅎ
-// $commentText.addEventListener('input', e => {
-//   $commentText.value.trim() !== '' ? $formSubmitBtn.classList.add('submit') : $formSubmitBtn.classList.remove('submit');
-// });
-
-// 댓글 달기
-// $form.addEventListener('submit', addCommentFunc);
-
-function initPrint() {
+export function initPrint() {
   const datas = getLocalStorageData();
-  // localStorage에 머 없으면 우짬? return 해줘야지 멀 징징거려 채문길
   if (datas === null || datas === undefined) return;
 
-  // html에 꽂아버리기
   render();
 }
-
-// render 함수
 
 function render(currentPage = 1) {
   // default로 함
@@ -41,7 +19,6 @@ function render(currentPage = 1) {
 
   let totalPage = Math.ceil(totalCount / commentsCount); // 전체 페이지 수 - '5'개 씩 끊은것
   let pageGroup = Math.ceil(currentPage / pageCount); // 보일 페이지네이션 버튼 그룹 - '5'개씩 그룹화 함 ->현재 페이지가 몇번째 그룹에 속해있는지를 알아야 현재 페이지 그룹 상의 첫번째 숫자와 마지막 숫자를 구할 수 있습니다.
-  console.log(currentPage, pageGroup);
   // totalPage가 14개이고 보일 내용이 5개라고 한다면 user가 보는 마지막 버튼의 숫자 이다.
   let last = pageGroup * pageCount;
 
@@ -51,14 +28,12 @@ function render(currentPage = 1) {
 
   // user가 '현재'보는 댓글 목록 버튼의 첫번째이다.
   let first = last - (pageCount - 1) <= 0 ? 1 : last - (pageCount - 1);
-  console.log(first, last);
   let next = last + 1;
   let prev = first - 1;
   // 여기에 페이지 element넣어줘서 한번에 append 해버릴꺼임
   const fragmentPageBtnContainer = document.createDocumentFragment();
 
   const fragmentPageContentContainerItems = [];
-  console.log(prev);
   if (prev > 0) {
     const beginStartBtn = document.createElement('button');
     beginStartBtn.setAttribute('class', 'button');
@@ -94,7 +69,6 @@ function render(currentPage = 1) {
     fragmentPageBtnContainer.appendChild(nexPageBtn);
     fragmentPageBtnContainer.appendChild(endPageBtn);
   }
-
   pagingRenderBtn(fragmentPageBtnContainer, currentPage);
 
   for (
@@ -110,6 +84,7 @@ function render(currentPage = 1) {
 }
 
 function pagingBtnEvent(next, prev, totalPage) {
+  const $pagingBtnContainer = document.querySelector('.buttons');
   let selectedType;
 
   const type = {
@@ -127,7 +102,6 @@ function pagingBtnEvent(next, prev, totalPage) {
 
       const dispatchData = this.getAttribute('data-page-num');
       this.classList.add('active');
-      console.log(this);
 
       // 나중에 refactoring 해보자
       if (!!type[dispatchData]) selectedType = type[dispatchData];
@@ -151,6 +125,7 @@ function makePagingBtn(number) {
 }
 
 function pagingRenderBtn(makedBtns, currentPage) {
+  const $pagingBtnContainer = document.querySelector('.buttons');
   // 일딴 buttonContainer의 요소가 있건 없건 없애주자
   while ($pagingBtnContainer.hasChildNodes()) {
     $pagingBtnContainer.removeChild($pagingBtnContainer.lastChild);
@@ -162,14 +137,14 @@ function pagingRenderBtn(makedBtns, currentPage) {
 }
 
 // 댓글 등록하기
-function addCommentFunc(event) {
+export function addCommentFunc(event) {
+  const $commentText = document.querySelector('.comment-text.add-comment');
   event.preventDefault();
   const $userName = document.querySelector('.input-name');
   const $userPwd = document.querySelector('.input-pwd');
 
   // 불합격하면 반환
   if (!isValidateInfo($userName, $userPwd, $commentText)) return;
-
   printingComment($userName, $userPwd, $commentText);
 }
 
@@ -187,11 +162,11 @@ function isValidateInfo(name, pwd, text) {
 }
 
 function printingComment(name, pwd, text) {
+  const $form = document.querySelector('.input-container');
   const today = commentDate();
-  const datas = setGetLocalStorage(name, pwd, text, today);
 
-  // printingTemplate(datas);
-  render(datas);
+  setGetLocalStorage(name, pwd, text, today);
+  render();
   $form.reset();
 }
 
@@ -244,6 +219,7 @@ function setLocalStorage(data) {
 
 // 실질적으로 local에서 받아와서 뿌리는 함수임
 function printingTemplate(info) {
+  const $commentContainer = document.querySelector('#comment');
   $commentContainer.innerHTML = '';
 
   info.forEach((data, i) => {
@@ -315,8 +291,6 @@ function editPrintingHtml(event) {
   );
 
   const findedEditCommentContainer = document.querySelectorAll('.comment-container')[findedEditCommentContainerIndex];
-  console.log(findedEditCommentContainer);
-
   const template = `
     <li class="comment-container">
     <div class="comment-view">
@@ -383,6 +357,7 @@ function cretaeCommentUpdateForm(index) {
 }
 
 const updateEvent = (targetForm, index) => {
+  const $pagingBtnContainer = document.querySelector('.buttons');
   // 걍 editButton 누르면 생성된 textarea의 value임
   const validatedTargetText = targetForm.children[1].value;
 
@@ -417,6 +392,8 @@ function createCommentDeleteTag() {
 }
 
 function deleteEventFunc(event) {
+  const $commentContainer = document.querySelector('#comment');
+  const $pagingBtnContainer = document.querySelector('.buttons');
   const checkPwd = prompt('비번입력하쇼');
   const id = this.parentElement.dataset.id;
   const targetLocalStorageIndex = localStorageArray.findIndex((target, i) => {
@@ -457,4 +434,4 @@ function grantedId(array) {
   });
   return array;
 }
-export { initPrint, addCommentFunc };
+// export { initPrint, addCommentFunc, printingComment };

@@ -25,7 +25,7 @@ export async function createModal(modalData) {
   $cardInfo.forEach(item => {
     if (item.id !== 'logo') {
       item.addEventListener('click', () => {
-        openModal();
+        openModal(); // 모달 오픈
         const imgSrc = item.src;
         const result = modalData.find(result => result.poster_path === imgSrc);
 
@@ -40,7 +40,7 @@ export async function createModal(modalData) {
             <p>누적 관객수 : ${formatPopulation(result.audiAcc)}</p>
             <p>누적 매출액 : ${formatNumber(result.salesAcc)}</p>
 
-            <div class="container">
+            <div class="comment-box">
               <ul id="comment"></ul>
               <div class="buttons"></div>
             </div>
@@ -82,21 +82,21 @@ export async function createModal(modalData) {
           `;
           $modalContainer.appendChild($modalContent);
         }
-        // 댓글 관련 변수 선언
-        const $commentContainer = document.querySelector('#comment');
-        const $form = document.querySelector('.input-container');
+        initPrint(); // 댓글 오픈
+
         const $commentText = document.querySelector('.comment-text.add-comment');
         const $formSubmitBtn = document.querySelector('.form-btn');
-        const $pagingBtnContainer = document.querySelector('.buttons');
 
-        initPrint();
-        $form.addEventListener('submit', addCommentFunc);
-
+        // 코멘트 한글자라도 있으면 버튼 활성화,댓글 하나라도 있으면 전송버튼 활성화 시켜서 UX로 알려주자 - 전역으로 해줘야징 ㅎㅎ
         $commentText.addEventListener('input', e => {
           $commentText.value.trim() !== ''
             ? $formSubmitBtn.classList.add('submit')
             : $formSubmitBtn.classList.remove('submit');
         });
+
+        // 댓글 달기
+        const $form = document.querySelector('.input-container');
+        $form.addEventListener('submit', addCommentFunc);
 
         // 모달 닫기
         document.getElementById('modalCloseButton').addEventListener('click', () => {

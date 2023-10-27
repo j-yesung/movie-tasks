@@ -192,8 +192,8 @@
 
 /*댓글 달기 css*/
 .input-container {
-  position: absolute;
-  top: 100%;
+  position: relative;
+  top: 111%;
   margin-top: 12px;
   padding: 14px 0;
 }
@@ -248,6 +248,7 @@
 
 .form-btn {
   opacity: 0.4;
+  margin-left: 10px;
 }
 
 .form-btn.submit {
@@ -290,4 +291,11 @@
 .next {
   position: absolute;
   right: -2.5rem;
+}
+
+.comment-box {
+  position: inherit;
+  margin-top: 40px;
+  top: 87%;
+  height: 150px;
 }
