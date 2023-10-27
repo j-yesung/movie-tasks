@@ -69,12 +69,15 @@ async function appendMovieList(listData) {
 }
 
 /**
+ * 익명 즉시 실행 함수
  * 영화 리스트 및 데이터 병합 함수 호출
  */
-(async function getMovieList() {
+(async function () {
   try {
+    console.time('fetch load check');
     const result = await Promise.all([fetchData(url1), fetchData(url2)]);
     finalData = await mergeData(result);
+    console.timeEnd('fetch load check');
 
     await appendMovieList(finalData);
     await createModal(finalData);
