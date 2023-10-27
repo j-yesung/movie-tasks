@@ -84,6 +84,7 @@
         opacity: 0.5;
         border-radius: 20px;
       }
+
       .comment-func_container:hover {
         transition: all 0.3s;
         background-color: bisque;
@@ -93,6 +94,7 @@
       .comment-func_container span {
         padding: 2px 4px;
       }
+
       .comment-func_container span:hover {
         transition: all 0.3s;
         color: rgb(86, 86, 202);
@@ -132,6 +134,7 @@
         max-width: calc(720px * (2 / 3));
         position: relative;
       }
+
       .comment-text.update-text {
         border: none;
         line-height: 1.4;
@@ -147,6 +150,7 @@
         resize: none;
         font-size: 14px;
       }
+
       .comment-text.update-text:focus {
         border: none;
         outline: none;
@@ -175,13 +179,16 @@
         border: 1px solid rgb(86, 86, 202);
         border-radius: 100%;
       }
+
       .update-btn .fa-solid.fa-arrow-up {
         font-size: 18px;
       }
+
       .update-btn.active {
         color: rgb(30, 48, 80);
         cursor: pointer;
       }
+
       /* .fa-solid.fa-arrow-up {
 
         }
@@ -195,6 +202,7 @@
         margin-top: 12px;
         padding: 14px 0;
       }
+
       .input-container input {
         border: none;
         padding-bottom: 5px;
@@ -211,6 +219,7 @@
         display: flex;
         gap: 10px;
       }
+
       .comment-text.add-comment {
         border: none;
         line-height: 1.4;
@@ -226,6 +235,7 @@
         resize: none;
         font-size: 14px;
       }
+
       .comment-text.add-comment:focus {
         border: none;
         outline: none;
@@ -235,6 +245,7 @@
       .comment-text.add-comment::-webkit-scrollbar {
         width: 3px;
       }
+
       /*댓글 달기 CSS End*/
 
       /*댓글 달기 btn*/
@@ -242,10 +253,47 @@
       .form-btn {
         opacity: 0.4;
       }
+
       .form-btn.submit {
         opacity: 1;
         cursor: pointer;
         color: rgb(86, 86, 202);
+      }
+
+      /*paging button들 CSS*/
+
+      .buttons {
+        position: relative;
+        padding: 1rem 0;
+        display: inline-flex;
+        justify-content: center;
+      }
+
+      .button {
+        padding: 0 0.5rem;
+        font-size: 0.8rem;
+        color: #333;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+      }
+
+      .button.active,
+      .button:hover {
+        color: #1f975d;
+        font-weight: 600;
+        text-decoration: underline;
+      }
+
+      .prev {
+        position: absolute;
+        left: -2.5rem;
+      }
+
+      .next {
+        position: absolute;
+        right: -2.5rem;
       }
     </style>
     <link
@@ -256,9 +304,8 @@
 
   <body>
     <div class="container">
-      <ul id="comment">
-       
-      </ul>
+      <ul id="comment"></ul>
+      <div class="buttons"></div>
     </div>
 
     <form class="input-container">
