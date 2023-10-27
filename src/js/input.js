@@ -1,26 +1,22 @@
-const $commentContainer = document.querySelector("#comment");
-const $form = document.querySelector(".input-container");
-const $commentText = document.querySelector(".comment-text.add-comment");
-const $formSubmitBtn = document.querySelector(".form-btn");
-const $pagingBtnContainer = document.querySelector(".buttons");
+// const $commentContainer = document.querySelector('#comment');
+// const $form = document.querySelector('.input-container');
+// const $commentText = document.querySelector('.comment-text.add-comment');
+// const $formSubmitBtn = document.querySelector('.form-btn');
+// const $pagingBtnContainer = document.querySelector('.buttons');
 let localStorageArray = [];
 
 //pagiNation 위한 변수들
 
 // 브라우저 키면 처음 그려주기
-initPrint();
+// initPrint();
 
 // 코멘트 한글자라도 있으면 버튼 활성화,댓글 하나라도 있으면 전송버튼 활성화 시켜서 UX로 알려주자 - 전역으로 해줘야징 ㅎㅎ
-$commentText.addEventListener("input", (e) => {
-  $commentText.value.trim() !== ""
-    ? $formSubmitBtn.classList.add("submit")
-    : $formSubmitBtn.classList.remove("submit");
-});
+// $commentText.addEventListener('input', e => {
+//   $commentText.value.trim() !== '' ? $formSubmitBtn.classList.add('submit') : $formSubmitBtn.classList.remove('submit');
+// });
 
 // 댓글 달기
-$form.addEventListener("submit", addCommentFunc);
-
-
+// $form.addEventListener('submit', addCommentFunc);
 
 function initPrint() {
   const datas = getLocalStorageData();
@@ -64,14 +60,14 @@ function render(currentPage = 1) {
   const fragmentPageContentContainerItems = [];
   console.log(prev);
   if (prev > 0) {
-    const beginStartBtn = document.createElement("button");
-    beginStartBtn.setAttribute("class", "button");
-    beginStartBtn.dataset.pageNum = "allprev";
+    const beginStartBtn = document.createElement('button');
+    beginStartBtn.setAttribute('class', 'button');
+    beginStartBtn.dataset.pageNum = 'allprev';
     beginStartBtn.innerHTML = `&lt;&lt;`;
 
-    const preBtn = document.createElement("button");
-    preBtn.setAttribute("class", "button");
-    preBtn.dataset.pageNum = "prev";
+    const preBtn = document.createElement('button');
+    preBtn.setAttribute('class', 'button');
+    preBtn.dataset.pageNum = 'prev';
     preBtn.innerHTML = `&lt;`;
 
     fragmentPageBtnContainer.appendChild(beginStartBtn);
@@ -84,16 +80,16 @@ function render(currentPage = 1) {
   }
 
   if (last < totalPage) {
-    const endPageBtn = document.createElement("button");
-    endPageBtn.setAttribute("class", "button");
-     endPageBtn.classList.add("next");
-    endPageBtn.dataset.pageNum = "endPage";
+    const endPageBtn = document.createElement('button');
+    endPageBtn.setAttribute('class', 'button');
+    endPageBtn.classList.add('next');
+    endPageBtn.dataset.pageNum = 'endPage';
     endPageBtn.innerHTML = `&gt;&gt;`;
 
-    const nexPageBtn = document.createElement("button");
-    nexPageBtn.setAttribute("class", "button");
-    nexPageBtn.classList.add("next");
-    nexPageBtn.dataset.pageNum = "next";
+    const nexPageBtn = document.createElement('button');
+    nexPageBtn.setAttribute('class', 'button');
+    nexPageBtn.classList.add('next');
+    nexPageBtn.dataset.pageNum = 'next';
     nexPageBtn.innerHTML = `&gt;`;
     fragmentPageBtnContainer.appendChild(nexPageBtn);
     fragmentPageBtnContainer.appendChild(endPageBtn);
@@ -122,15 +118,15 @@ function pagingBtnEvent(next, prev, totalPage) {
     allprev: 1,
     endPage: totalPage,
   };
-  Array.prototype.forEach.call($pagingBtnContainer.children, (button) => {
-    button.addEventListener("click", function (e) {
+  Array.prototype.forEach.call($pagingBtnContainer.children, button => {
+    button.addEventListener('click', function (e) {
       e.preventDefault();
       for (let i = 0; i < $pagingBtnContainer.children.length; i++) {
-        $pagingBtnContainer.children[i].classList.remove("active");
+        $pagingBtnContainer.children[i].classList.remove('active');
       }
 
-      const dispatchData = this.getAttribute("data-page-num");
-      this.classList.add("active");
+      const dispatchData = this.getAttribute('data-page-num');
+      this.classList.add('active');
       console.log(this);
 
       // 나중에 refactoring 해보자
@@ -144,12 +140,12 @@ function pagingBtnEvent(next, prev, totalPage) {
 }
 
 function makePagingBtn(number) {
-  const button = document.createElement("button");
-  button.classList.add("button");
+  const button = document.createElement('button');
+  button.classList.add('button');
   button.dataset.pageNum = number;
   button.innerText = number;
   // 페이지네이션의 숫자 버튼 누른 것을 active 해주기 위해-function pagingRenderBtn에 있음
-  button.setAttribute("name", number);
+  button.setAttribute('name', number);
 
   return button;
 }
@@ -162,16 +158,14 @@ function pagingRenderBtn(makedBtns, currentPage) {
   $pagingBtnContainer.appendChild(makedBtns);
 
   // 페이지네이션의 숫자 버튼 누른 것을 active 해주기 위해
-  $pagingBtnContainer.children
-    .namedItem(`${currentPage}`)
-    .classList.add("active");
+  $pagingBtnContainer.children.namedItem(`${currentPage}`).classList.add('active');
 }
 
 // 댓글 등록하기
 function addCommentFunc(event) {
   event.preventDefault();
-  const $userName = document.querySelector(".input-name");
-  const $userPwd = document.querySelector(".input-pwd");
+  const $userName = document.querySelector('.input-name');
+  const $userPwd = document.querySelector('.input-pwd');
 
   // 불합격하면 반환
   if (!isValidateInfo($userName, $userPwd, $commentText)) return;
@@ -181,11 +175,11 @@ function addCommentFunc(event) {
 
 function isValidateInfo(name, pwd, text) {
   if (
-    name.value !== "" &&
+    name.value !== '' &&
     pwd.value.length == 4 &&
-    pwd.value !== "" &&
+    pwd.value !== '' &&
     !isNaN(pwd.value) && // pwd.value가 0000 이면 안먹음 =>!!Number(pwd.value) 따라서 !isNaN함수로 대체함
-    text.value !== ""
+    text.value !== ''
   )
     return true;
 
@@ -204,10 +198,10 @@ function printingComment(name, pwd, text) {
 function commentDate() {
   const today = new Date();
   const notationOptions = {
-    month: "long",
-    day: "numeric",
+    month: 'long',
+    day: 'numeric',
   };
-  return today.toLocaleDateString("ko-KR", notationOptions);
+  return today.toLocaleDateString('ko-KR', notationOptions);
 }
 
 // localStorage에 저장하고 얻어오기 <- form event 때문임;;
@@ -227,7 +221,7 @@ function setGetLocalStorage(name, pwd, text, today) {
   const newLocalStorageArray = grantedId(localStorageArray);
 
   const convertJson = JSON.stringify(newLocalStorageArray);
-  localStorage.setItem("data", convertJson);
+  localStorage.setItem('data', convertJson);
 
   // globe 변수 localStorageArray를 리턴함
   return getLocalStorageData();
@@ -235,7 +229,7 @@ function setGetLocalStorage(name, pwd, text, today) {
 
 // 처음 브라우저 열었을 때 값 받아와서 그려줘야 하니까 getLocalStorageData 함수로 따로 뺌
 function getLocalStorageData() {
-  const getData = localStorage.getItem("data");
+  const getData = localStorage.getItem('data');
   if (getData === null || getData === undefined) return;
 
   localStorageArray = JSON.parse(getData);
@@ -245,15 +239,15 @@ function getLocalStorageData() {
 
 function setLocalStorage(data) {
   const convertJson = JSON.stringify(data);
-  localStorage.setItem("data", convertJson);
+  localStorage.setItem('data', convertJson);
 }
 
 // 실질적으로 local에서 받아와서 뿌리는 함수임
 function printingTemplate(info) {
-  $commentContainer.innerHTML = "";
+  $commentContainer.innerHTML = '';
 
   info.forEach((data, i) => {
-    //data-edit 값을 페이지 네이션작업 후 다시 넣었는데 이유는 수정버튼을 눌렀을 때 다시 localStorageArray의 값은 
+    //data-edit 값을 페이지 네이션작업 후 다시 넣었는데 이유는 수정버튼을 눌렀을 때 다시 localStorageArray의 값은
     const template = `
         <li class="comment-container">
         <div class="comment-view">
@@ -274,13 +268,11 @@ function printingTemplate(info) {
         </div>
       </li>
         `;
-    $commentContainer.insertAdjacentHTML("beforeend", template);
+    $commentContainer.insertAdjacentHTML('beforeend', template);
   });
 
   // delete,edit은 따로 이벤트 등록해주려고 따로 뺌..... (사실 내 능력 부족..)
-  let $commentFuncContainer = document.querySelectorAll(
-    ".comment-func_container"
-  );
+  let $commentFuncContainer = document.querySelectorAll('.comment-func_container');
   $commentFuncContainer.forEach((target, i) => {
     const deleteSpanTag = createCommentDeleteTag();
     const editSpanTag = createCommentEditTag();
@@ -292,40 +284,37 @@ function printingTemplate(info) {
 // EditButton 관련 함수들 Start ---------------
 
 function createCommentEditTag(commentArray) {
-  const editSpan = document.createElement("span");
+  const editSpan = document.createElement('span');
   const editIcon = '<i class="fa-solid fa-pen"></i>';
-  editSpan.setAttribute("class", "comment-edit_container");
+  editSpan.setAttribute('class', 'comment-edit_container');
   editSpan.innerHTML = editIcon;
 
-  editSpan.addEventListener("click", editPrintingHtml);
+  editSpan.addEventListener('click', editPrintingHtml);
   return editSpan;
 }
 
 function editPrintingHtml(event) {
-  const checkPwd = prompt("비번입력하쇼");
+  const checkPwd = prompt('비번입력하쇼');
   const id = this.parentElement.dataset.id;
 
   const targetLocalStorageIndex = localStorageArray.findIndex((target, i) => {
     return target.pwd === checkPwd && localStorageArray[i].id === id;
   });
   // 비번 틀리면  관둬야지...
-  if (targetLocalStorageIndex === -1) return alert("틀림");
+  if (targetLocalStorageIndex === -1) return alert('틀림');
   // 아래 'targetedLocalStorageData'이라는 변수까지가 localStorage에서 받아온 배열에서 원하는 요소의 index 찾기 로직이다. 이 인덱스를 찾아서 template에 집어 넣는다.
   const targetedLocalStorageData = localStorageArray[targetLocalStorageIndex];
-   
-    // 페이지네이션하면서 브라우저에 보여지는 갯수가 5개로 제한 되었다 따라서 function printingTemplate에서 그려줄 때 data-edit를 넣어주어 edit 버튼을 눌렀을 때 data-edit의 number와 같은 '현재' 브라우저에 보여지는 comment를 찾아 주기 로직이다.
-  const findingEditNumberName = this.parentElement.dataset.edit;
-  const findedEditCommentContainerIndex = [
-    ...document.querySelectorAll(".comment-container"),
-  ].findIndex((parent, i) => {
-    const target = parent.querySelector(".comment-func_container");
-    return target.getAttribute("data-edit") == findingEditNumberName;
-  });
 
-  const findedEditCommentContainer =
-    document.querySelectorAll(".comment-container")[
-      findedEditCommentContainerIndex
-    ];
+  // 페이지네이션하면서 브라우저에 보여지는 갯수가 5개로 제한 되었다 따라서 function printingTemplate에서 그려줄 때 data-edit를 넣어주어 edit 버튼을 눌렀을 때 data-edit의 number와 같은 '현재' 브라우저에 보여지는 comment를 찾아 주기 로직이다.
+  const findingEditNumberName = this.parentElement.dataset.edit;
+  const findedEditCommentContainerIndex = [...document.querySelectorAll('.comment-container')].findIndex(
+    (parent, i) => {
+      const target = parent.querySelector('.comment-func_container');
+      return target.getAttribute('data-edit') == findingEditNumberName;
+    },
+  );
+
+  const findedEditCommentContainer = document.querySelectorAll('.comment-container')[findedEditCommentContainerIndex];
   console.log(findedEditCommentContainer);
 
   const template = `
@@ -351,12 +340,11 @@ function editPrintingHtml(event) {
   const editForm = cretaeCommentUpdateForm(targetLocalStorageIndex);
   findedEditCommentContainer.innerHTML = template;
 
-  findedEditCommentContainer.children[0].children[0].append(editForm);// textarea로 바꿔주는 최종 작업
+  findedEditCommentContainer.children[0].children[0].append(editForm); // textarea로 바꿔주는 최종 작업
 
   // 수정시 textarea의 value값을 기존 value 값으로 보여주는 코드
-  let textAreaPreValue =
-    findedEditCommentContainer.children[0].children[0].children[1].children[1];
-    textAreaPreValue.value = targetedLocalStorageData.text;
+  let textAreaPreValue = findedEditCommentContainer.children[0].children[0].children[1].children[1];
+  textAreaPreValue.value = targetedLocalStorageData.text;
 }
 
 // EditButton 관련 함수들 End ---------------
@@ -364,14 +352,14 @@ function editPrintingHtml(event) {
 // updateForm 함수들 Start ----------
 
 function cretaeCommentUpdateForm(index) {
-  const updateForm = document.createElement("form");
-  updateForm.classList.add("comment-text_container");
-  updateForm.classList.add("update-text");
+  const updateForm = document.createElement('form');
+  updateForm.classList.add('comment-text_container');
+  updateForm.classList.add('update-text');
 
-  const updateButton = document.createElement("button");
+  const updateButton = document.createElement('button');
   const updateIcon = '<i class="fa-solid fa-arrow-up"></i>';
-  updateButton.setAttribute("class", "update-btn");
-  updateButton.setAttribute("type", "submit");
+  updateButton.setAttribute('class', 'update-btn');
+  updateButton.setAttribute('type', 'submit');
   // 버튼 활성화도 시키는 이벤트는 다음번에 만들자
   updateButton.innerHTML = updateIcon;
 
@@ -386,8 +374,8 @@ function cretaeCommentUpdateForm(index) {
     `;
 
   updateForm.append(updateButton);
-  updateForm.insertAdjacentHTML("beforeend", updateTextarea);
-  updateForm.addEventListener("submit", function (e) {
+  updateForm.insertAdjacentHTML('beforeend', updateTextarea);
+  updateForm.addEventListener('submit', function (e) {
     e.preventDefault();
     updateEvent(this, index);
   });
@@ -400,13 +388,13 @@ const updateEvent = (targetForm, index) => {
 
   // 수정 후 현재 currentPage에 그대로 있기 위한 Logic임
   const convertFindingBtn = [...$pagingBtnContainer.children];
-  const findingCurrentPage = convertFindingBtn.filter((target) => {
-    return target.classList.contains("active");
+  const findingCurrentPage = convertFindingBtn.filter(target => {
+    return target.classList.contains('active');
   });
 
   const currentPage = findingCurrentPage[0].innerText;
 
-  if (validatedTargetText.trim() === "") {
+  if (validatedTargetText.trim() === '') {
     render(currentPage);
     return;
   }
@@ -419,41 +407,41 @@ const updateEvent = (targetForm, index) => {
 // Delete 관련 함수들 Start---------------
 
 function createCommentDeleteTag() {
-  const deleteSpan = document.createElement("span");
+  const deleteSpan = document.createElement('span');
   const deleteIcon = '<i class="fa-solid fa-trash"></i>';
-  deleteSpan.setAttribute("class", "comment-delte_container");
+  deleteSpan.setAttribute('class', 'comment-delte_container');
   deleteSpan.innerHTML = deleteIcon;
 
-  deleteSpan.addEventListener("click", deleteEventFunc);
+  deleteSpan.addEventListener('click', deleteEventFunc);
   return deleteSpan;
 }
 
 function deleteEventFunc(event) {
-  const checkPwd = prompt("비번입력하쇼");
+  const checkPwd = prompt('비번입력하쇼');
   const id = this.parentElement.dataset.id;
-   const targetLocalStorageIndex = localStorageArray.findIndex((target, i) => {
+  const targetLocalStorageIndex = localStorageArray.findIndex((target, i) => {
     return target.pwd === checkPwd && localStorageArray[i].id === id;
   });
   // 비번 틀리면  관둬야지...
   if (targetLocalStorageIndex === -1) return alert('틀림');
 
   // 비번안틀리면 이 아래 코드 실행해서 삭제 해주고 다시 그려주자
-  deleteEvent(this, "click", deleteEventFunc); // deleteEvent
-  deleteEvent(this, "click", editPrintingHtml); // eidtEvent
+  deleteEvent(this, 'click', deleteEventFunc); // deleteEvent
+  deleteEvent(this, 'click', editPrintingHtml); // eidtEvent
   localStorageArray.splice(targetLocalStorageIndex, 1);
 
   // id다시 부여해줘야지 -> 삭제 했으니까 짜식아!!!!
   const newLocalStorageArray = grantedId(localStorageArray);
-  setLocalStorage(newLocalStorageArray)
+  setLocalStorage(newLocalStorageArray);
 
   const convertFindingBtn = [...$pagingBtnContainer.children];
-  const findingCurrentPage = convertFindingBtn.filter((target) => {
-    return target.classList.contains("active");
+  const findingCurrentPage = convertFindingBtn.filter(target => {
+    return target.classList.contains('active');
   });
 
   const currentPage = findingCurrentPage[0].innerText;
   // 4번 버튼에서 요소가 하나 있는데, 그걸 삭제하면 그 이전 페이지로 다시 그려주는 예외 처리까지 겸한 코드
-  $commentContainer.children.length <=1 ? render(currentPage - 1) : render(currentPage);
+  $commentContainer.children.length <= 1 ? render(currentPage - 1) : render(currentPage);
 }
 
 function deleteEvent(target, eventType, funcName) {
@@ -469,3 +457,4 @@ function grantedId(array) {
   });
   return array;
 }
+export { initPrint, addCommentFunc };
