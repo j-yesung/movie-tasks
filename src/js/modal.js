@@ -3,25 +3,17 @@ const $modalContent = document.getElementById('modalContent');
 
 // 관객수 표기
 function formatPopulation(number) {
-  if (number >= 10000000) {
-    return `누적 관객수 : ${Math.round(number / 10000000)}천만명`;
-  } else if (number >= 10000) {
-    return `누적 관객수 : ${Math.round(number / 10000)}만명`;
-  } else if (number >= 1000) {
-    return `누적 관객수 : ${Math.round(number / 1000)}천명`;
-  } else {
-    return `누적 관객수 : ${Math.round(number)}명`;
-  }
+  const formatter = Intl.NumberFormat('ko', { notation: 'compact' });
+  return formatter.format(number);
 }
 // 매출액 표기
 function formatNumber(number) {
-  if (number >= 100000000) {
-    return `누적 매출액 : ${Math.round(number / 100000000)}억`;
-  } else if (number >= 10000) {
-    return `누적 매출액 : ${Math.round(number / 10000)}만`;
-  } else {
-    return `누적 매출액 : ${Math.round(number.toString())}`;
-  }
+  const formatter = Intl.NumberFormat('ko', {
+    style: 'currency',
+    currency: 'krw',
+    notation: 'compact',
+  });
+  return formatter.format(number);
 }
 
 // 모달 생성
@@ -43,8 +35,8 @@ export async function createModal(modalData) {
             <div id="movieContent">
               <img src="${result.poster_path}" />
             </div>
-            <p>${formatPopulation(result.audiAcc)}</p>
-            <p>${formatNumber(result.salesAcc)}</p>
+            <p>누적 관객수 : ${formatPopulation(result.audiAcc)}</p>
+            <p>누적 매출액 : ${formatNumber(result.salesAcc)}</p>
             <button id="modalCloseButton"></button>
           `;
           $modalContainer.appendChild($modalContent);
