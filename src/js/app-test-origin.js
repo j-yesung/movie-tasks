@@ -1,4 +1,5 @@
 import { createModal } from '../js/modal-test.js';
+
 const $header = document.querySelector('header');
 const $container = document.querySelector('.container');
 const $sortSelect = document.getElementById('sortingSelect');
@@ -12,7 +13,6 @@ const date = '20220101';
 const url1 = '../data/poster.json';
 const url2 = `http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${key}&targetDt=${date}`;
 let finalData = [];
-export let localStorageObject = {}; // localStorage의 각 배열에 담길 댓글들을 감싼 Object
 
 /**
  * 데이터 불러오기
@@ -80,13 +80,7 @@ async function appendMovieList(listData) {
     console.timeEnd('fetch load check');
 
     await appendMovieList(finalData);
-    await createModal(finalData).then(targets => {
-      const newArray = [];
-      targets.forEach((target, i) => {
-        // 배열의 인데스를 객체의 key값으로 넣고 싶습니다. 컴퓨터님
-        localStorageObject[i] = newArray;
-      });
-    });
+    await createModal(finalData);
   } catch (error) {
     console.log('에러 발생\n', error);
   }

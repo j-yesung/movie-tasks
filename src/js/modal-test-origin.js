@@ -22,7 +22,7 @@ function formatNumber(number) {
 export async function createModal(modalData) {
   const $cardInfo = document.querySelectorAll('.card');
 
-  $cardInfo.forEach((item, i) => {
+  $cardInfo.forEach(item => {
     if (item.id !== 'logo') {
       item.addEventListener('click', () => {
         openModal(); // 모달 오픈
@@ -81,8 +81,8 @@ export async function createModal(modalData) {
             <button id="modalCloseButton"></button>
           `;
           $modalContainer.appendChild($modalContent);
-          initPrint(i); // 댓글 오픈
         }
+        initPrint(); // 댓글 오픈
 
         const $commentText = document.querySelector('.comment-text.add-comment');
         const $formSubmitBtn = document.querySelector('.form-btn');
@@ -105,7 +105,6 @@ export async function createModal(modalData) {
       });
     }
   });
-  return modalData;
 }
 
 // 모달 ON/OFF

@@ -1,32 +1,25 @@
-import { localStorageObject } from '../js/app-test.js';
-
-let localStorageBox;
-let index;
 let localStorageArray = [];
-export function initPrint(i) {
-  index = i;
 
-  localStorageBox = localStorageObject;
-  localStorageBox = getLocalStorageData(index);
-  localStorageArray = localStorageBox[index];
-  // datas의 i값(keym)의  value값(array)이 없다면 return 아니면 render()
-  if (localStorageArray === null || localStorageArray === undefined) return;
+export function initPrint() {
+  const datas = getLocalStorageData();
+  if (datas === null || datas === undefined) return;
 
-  render(index);
+  render();
 }
 
-function render(i, currentPage = 1) {
+function render(currentPage = 1) {
+  console.log('render currentPage: ', currentPage);
+  // 댓글 개수가 0개 일 때, 페이지 버튼 제거
+  if (currentPage === 0) document.querySelector('.buttons').remove();
   // default로 함
-  console.log(index);
-  const datas = getLocalStorageData(i);
-  localStorageArray = datas[i];
-  console.log(datas, i, datas[i]);
-  grantedId(localStorageArray);
-  if (localStorageArray <= 3) return printingTemplate(localStorageArray);
+  const datas = getLocalStorageData();
+  grantedId(datas);
+  // 댓글이 1개 이상 생기면 페이지 버튼 생성
+  if (datas.length <= 0) return printingTemplate(datas);
 
   const pageCount = 3; // 화면에 나타날 페이지 갯수
   const commentsCount = 3; //한 페이지당 나타낼 댓글 갯수
-  let totalCount = localStorageArray.length;
+  let totalCount = datas.length;
 
   let totalPage = Math.ceil(totalCount / commentsCount); // 전체 페이지 수 - '5'개 씩 끊은것
   let pageGroup = Math.ceil(currentPage / pageCount); // 보일 페이지네이션 버튼 그룹 - '5'개씩 그룹화 함 ->현재 페이지가 몇번째 그룹에 속해있는지를 알아야 현재 페이지 그룹 상의 첫번째 숫자와 마지막 숫자를 구할 수 있습니다.
@@ -87,8 +80,9 @@ function render(i, currentPage = 1) {
     i < (currentPage - 1) * commentsCount + commentsCount && i < totalCount; // i<totalCount를 넣어준 이유는 글전체 내용보다는 넘치지 않아야하므로
     i++
   ) {
-    fragmentPageContentContainerItems.push(localStorageArray[i]);
+    fragmentPageContentContainerItems.push(datas[i]);
   }
+
   printingTemplate(fragmentPageContentContainerItems);
   pagingBtnEvent(next, prev, totalPage);
 }
@@ -118,7 +112,7 @@ function pagingBtnEvent(next, prev, totalPage) {
       else {
         selectedType = dispatchData;
       }
-      render(index, selectedType);
+      render(selectedType);
     });
   });
 }
@@ -176,7 +170,7 @@ function printingComment(name, pwd, text) {
   const today = commentDate();
 
   setGetLocalStorage(name, pwd, text, today);
-  render(index);
+  render();
   $form.reset();
 }
 
@@ -198,19 +192,14 @@ function setGetLocalStorage(name, pwd, text, today) {
     date: today,
   };
   // deleteEventFunc 때문에 추가한 조건문
-  if (Object.keys(info).length === 0) return alert('다 채워넣자');
+  if (Object.keys(info).length === 0) return;
 
-  // 수정해야함
-  console.log(localStorageArray);
   localStorageArray.unshift(info);
 
   //id 부여해줘야 나중에 delete, edit 해주려고
   const newLocalStorageArray = grantedId(localStorageArray);
-  localStorageBox[index] = newLocalStorageArray;
 
-  const newLocalStorageObject = localStorageBox;
-
-  const convertJson = JSON.stringify(newLocalStorageObject);
+  const convertJson = JSON.stringify(newLocalStorageArray);
   localStorage.setItem('data', convertJson);
 
   // globe 변수 localStorageArray를 리턴함
@@ -218,33 +207,27 @@ function setGetLocalStorage(name, pwd, text, today) {
 }
 
 // 처음 브라우저 열었을 때 값 받아와서 그려줘야 하니까 getLocalStorageData 함수로 따로 뺌
-function getLocalStorageData(index) {
-  let getData = JSON.parse(localStorage.getItem('data'));
+function getLocalStorageData() {
+  const getData = localStorage.getItem('data');
+  if (getData === null || getData === undefined) return;
 
-  localStorageArray = getData[index];
-  if (localStorageArray === null || localStorageArray === undefined) return;
-
-  localStorageBox = getData;
+  localStorageArray = JSON.parse(getData);
   const idGrantedLocalStorageArray = grantedId(localStorageArray);
-  localStorageBox[index] = idGrantedLocalStorageArray;
-
-  return localStorageBox;
+  return idGrantedLocalStorageArray;
 }
 
 function setLocalStorage(data) {
-  // 수정해야함
   const convertJson = JSON.stringify(data);
   localStorage.setItem('data', convertJson);
 }
 
 // 실질적으로 local에서 받아와서 뿌리는 함수임
 function printingTemplate(info) {
-  // 수정해야함
   const $commentContainer = document.querySelector('#comment');
   $commentContainer.innerHTML = '';
 
   info.forEach((data, i) => {
-    // data-edit 값을 페이지 네이션작업 후 다시 넣었는데 이유는 수정버튼을 눌렀을 때 다시 localStorageArray의 값은
+    //data-edit 값을 페이지 네이션작업 후 다시 넣었는데 이유는 수정버튼을 눌렀을 때 다시 localStorageArray의 값은
     const template = `
         <li class="comment-container">
         <div class="comment-view">
@@ -295,7 +278,7 @@ function editPrintingHtml(event) {
   const id = this.parentElement.dataset.id;
 
   const targetLocalStorageIndex = localStorageArray.findIndex((target, i) => {
-    return target.pwd === checkPwd && target.id === id;
+    return target.pwd === checkPwd && localStorageArray[i].id === id;
   });
   // 비번 틀리면  관둬야지...
   if (targetLocalStorageIndex === -1) return alert('틀림');
@@ -377,7 +360,7 @@ function cretaeCommentUpdateForm(index) {
   return updateForm;
 }
 
-const updateEvent = (targetForm, i) => {
+const updateEvent = (targetForm, index) => {
   const $pagingBtnContainer = document.querySelector('.buttons');
   // 걍 editButton 누르면 생성된 textarea의 value임
   const validatedTargetText = targetForm.children[1].value;
@@ -391,14 +374,13 @@ const updateEvent = (targetForm, i) => {
   const currentPage = findingCurrentPage[0].innerText;
 
   if (validatedTargetText.trim() === '') {
-    render(index, currentPage);
+    render(currentPage);
     return;
   }
 
-  localStorageArray[i].text = validatedTargetText;
-  localStorageBox[index] = localStorageArray;
-  setLocalStorage(localStorageBox);
-  render(index, currentPage);
+  localStorageArray[index].text = validatedTargetText;
+  setLocalStorage(localStorageArray);
+  render(currentPage);
 };
 
 // Delete 관련 함수들 Start---------------
@@ -431,8 +413,7 @@ function deleteEventFunc(event) {
 
   // id다시 부여해줘야지 -> 삭제 했으니까 짜식아!!!!
   const newLocalStorageArray = grantedId(localStorageArray);
-  localStorageBox[index] = newLocalStorageArray;
-  setLocalStorage(localStorageBox);
+  setLocalStorage(newLocalStorageArray);
 
   const convertFindingBtn = [...$pagingBtnContainer.children];
   const findingCurrentPage = convertFindingBtn.filter(target => {
@@ -440,8 +421,9 @@ function deleteEventFunc(event) {
   });
 
   const currentPage = findingCurrentPage[0].innerText;
+  console.log('deleteEventFunc currentPage: ', currentPage);
   // 4번 버튼에서 요소가 하나 있는데, 그걸 삭제하면 그 이전 페이지로 다시 그려주는 예외 처리까지 겸한 코드
-  $commentContainer.children.length <= 1 ? render(index, currentPage - 1) : render(index, currentPage);
+  $commentContainer.children.length <= 1 ? render(currentPage - 1) : render(currentPage);
 }
 
 function deleteEvent(target, eventType, funcName) {
@@ -451,9 +433,8 @@ function deleteEvent(target, eventType, funcName) {
 // Delete 관련 함수들 End-----------------
 
 // id 값 부여 하기
-export function grantedId(array) {
+function grantedId(array) {
   array.forEach((data, i) => {
-    console.log(data.id);
     data.id = `${i}`;
   });
   return array;
