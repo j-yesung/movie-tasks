@@ -7,15 +7,9 @@ let localStorageArray = [];
 
 export function initPrint(i) {
   index = i;
+  // app-test.js에서 먼저 localStorage에 'data'라는 값이 없다면 오브젝트 배열을 set해주고 있으면 return 하는 식으로 하여서 initPrint안에서  localStorage에 'data'값이 있거나 없거나라는 조건 식을 사용해 줄 필요가 없다.
 
-  localStorageBox = localStorageObject;
   localStorageBox = getLocalStorageData(index);
-  
-  // localStorageBox의 용도는 localStorage의 get한 data인데 처음 댓글도 없는(data)값도 없을 때 어떻게 할지를 조건문으로 안써줬기 때문에 error가 났었다. 그러기에 localStorage에서 data값이 있는지 없는지에 따라 어떻게 해줄지를 처리를 해줘야 하기 때문에  15번 라인에 조건문 처리를 해줌
-  if(localStorageBox === undefined || localStorageBox === null) {
-    return localStorageBox = setLocalStorage(localStorageObject)
-  } 
-
   localStorageArray = localStorageBox[index];
   // datas의 i값(keym)의  value값(array)이 없다면 return 아니면 render()
   if (localStorageArray === null || localStorageArray === undefined) return;
@@ -29,9 +23,9 @@ function render(i, currentPage = 1) {
   const datas = getLocalStorageData(i);
 
   localStorageArray = datas[i];
-  console.log(datas, i, datas[i]);
+
   grantedId(localStorageArray);
-  if (localStorageArray <= 3) return printingTemplate(localStorageArray);
+  if (localStorageArray <= 0) return printingTemplate(localStorageArray);
 
   const pageCount = 3; // 화면에 나타날 페이지 갯수
   const commentsCount = 3; //한 페이지당 나타낼 댓글 갯수
@@ -185,6 +179,7 @@ function printingComment(name, pwd, text) {
   const today = commentDate();
 
   setGetLocalStorage(name, pwd, text, today);
+
   render(index);
   $form.reset();
 }
@@ -215,9 +210,9 @@ function setGetLocalStorage(name, pwd, text, today) {
   //id 부여해줘야 나중에 delete, edit 해주려고
   const newLocalStorageArray = grantedId(localStorageArray);
  
- 
-  localStorageBox[index] = newLocalStorageArray;
   console.log(localStorageBox)
+  console.log(localStorageBox[index])
+  localStorageBox[index] = newLocalStorageArray;
   const newLocalStorageObject = localStorageBox;
 
   const convertJson = JSON.stringify(newLocalStorageObject);
@@ -228,18 +223,21 @@ function setGetLocalStorage(name, pwd, text, today) {
 }
 
 // 처음 브라우저 열었을 때 값 받아와서 그려줘야 하니까 getLocalStorageData 함수로 따로 뺌
-function getLocalStorageData(index) {
+function getLocalStorageData(i) {
   let getData = JSON.parse(localStorage.getItem('data'));
 
-  // 233라인의 if문의 localStorageArray 조건문에서 localStorageArray에 대한 변수를 못찾았기 때문임ㄹ
-  localStorageArray = getData[index];
+  if(getData === null || getData === undefined) return 
+ 
   localStorageBox = getData;// 계속해서 최신화 하기 위해 일부러 localStorageBox =  getData라고 해주기 위함
-  if (getData === null||localStorageArray === null || localStorageArray === undefined) return;
-  
+    
 
-  
+    localStorageArray = getData[i];
+    // getData[i]한 배열의 값이 없다면(당연히 댓글 쓰기 전 초기 값이겠지?) 그냥 231에서 참조형태로 변수에 담은 localStorageBox(object배열)만 return 시킨다.
+  if (localStorageArray === null || localStorageArray === undefined) return localStorageBox;
+
+  // localStorageArray에 배열(댓글들이 저장되어있으면) 요소가 있으면 id값 부여해서 localStorageBox의 n번째 배열(댓글 모음집)을 다시 참조형태로 부여한다.
   const idGrantedLocalStorageArray = grantedId(localStorageArray);
-  localStorageBox[index] = idGrantedLocalStorageArray;
+  localStorageBox[i] = idGrantedLocalStorageArray;
 
   return localStorageBox;
 }
@@ -248,6 +246,7 @@ function setLocalStorage(data) {
   // 수정해야함
   const convertJson = JSON.stringify(data);
   localStorage.setItem('data', convertJson);
+  
 }
 
 // 실질적으로 local에서 받아와서 뿌리는 함수임

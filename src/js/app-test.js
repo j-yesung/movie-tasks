@@ -82,12 +82,18 @@ async function appendMovieList(listData) {
     await appendMovieList(finalData);
     await createModal(finalData)
     .then(datas =>{
-      datas.forEach((el,i)=>{
-        const newArray = [];
-        localStorageObject[i] = newArray;
-      })
+
+      // 브라우저 키자마자 조건식으로 localStorage에 '몰래' 댓글모음집 담을 데이터 셋팅 해줘서, input.js에서 localStorage에 데이터가 있느니 없느니라는 귀찮은 조건식을 안써주게 함
+      if(localStorage.getItem("data")=== null || localStorage.getItem('data')=== undefined) {
+        datas.forEach((el,i)=>{
+          const newArray = [];
+          localStorageObject[i] = newArray;
+        })
+
+        localStorage.setItem("data",JSON.stringify(localStorageObject))
+      } 
     });
-    console.log(localStorageObject)
+
   } catch (error) {
     console.log("에러 발생\n", error);
   }
