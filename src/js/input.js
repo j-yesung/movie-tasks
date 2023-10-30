@@ -3,22 +3,31 @@ import { localStorageObject } from '../js/app-test.js';
 let localStorageBox;
 let index;
 let localStorageArray = [];
+
+
 export function initPrint(i) {
   index = i;
 
   localStorageBox = localStorageObject;
   localStorageBox = getLocalStorageData(index);
+  
+  // localStorageBox의 용도는 localStorage의 get한 data인데 처음 댓글도 없는(data)값도 없을 때 어떻게 할지를 조건문으로 안써줬기 때문에 error가 났었다. 그러기에 localStorage에서 data값이 있는지 없는지에 따라 어떻게 해줄지를 처리를 해줘야 하기 때문에  15번 라인에 조건문 처리를 해줌
+  if(localStorageBox === undefined || localStorageBox === null) {
+    return localStorageBox = setLocalStorage(localStorageObject)
+  } 
+
   localStorageArray = localStorageBox[index];
   // datas의 i값(keym)의  value값(array)이 없다면 return 아니면 render()
   if (localStorageArray === null || localStorageArray === undefined) return;
 
+
   render(index);
 }
-
+                  // default로 currentPage= 1 함
 function render(i, currentPage = 1) {
-  // default로 함
-  console.log(index);
+  
   const datas = getLocalStorageData(i);
+
   localStorageArray = datas[i];
   console.log(datas, i, datas[i]);
   grantedId(localStorageArray);
@@ -197,17 +206,18 @@ function setGetLocalStorage(name, pwd, text, today) {
     text: text.value,
     date: today,
   };
+
   // deleteEventFunc 때문에 추가한 조건문
   if (Object.keys(info).length === 0) return alert('다 채워넣자');
 
-  // 수정해야함
-  console.log(localStorageArray);
+  
   localStorageArray.unshift(info);
-
   //id 부여해줘야 나중에 delete, edit 해주려고
   const newLocalStorageArray = grantedId(localStorageArray);
+ 
+ 
   localStorageBox[index] = newLocalStorageArray;
-
+  console.log(localStorageBox)
   const newLocalStorageObject = localStorageBox;
 
   const convertJson = JSON.stringify(newLocalStorageObject);
@@ -221,10 +231,13 @@ function setGetLocalStorage(name, pwd, text, today) {
 function getLocalStorageData(index) {
   let getData = JSON.parse(localStorage.getItem('data'));
 
+  // 233라인의 if문의 localStorageArray 조건문에서 localStorageArray에 대한 변수를 못찾았기 때문임ㄹ
   localStorageArray = getData[index];
-  if (localStorageArray === null || localStorageArray === undefined) return;
+  localStorageBox = getData;// 계속해서 최신화 하기 위해 일부러 localStorageBox =  getData라고 해주기 위함
+  if (getData === null||localStorageArray === null || localStorageArray === undefined) return;
+  
 
-  localStorageBox = getData;
+  
   const idGrantedLocalStorageArray = grantedId(localStorageArray);
   localStorageBox[index] = idGrantedLocalStorageArray;
 
@@ -453,8 +466,7 @@ function deleteEvent(target, eventType, funcName) {
 // id 값 부여 하기
 export function grantedId(array) {
   array.forEach((data, i) => {
-    console.log(data.id);
-    data.id = `${i}`;
+    data.id= `${i}`;
   });
   return array;
 }

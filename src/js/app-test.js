@@ -80,7 +80,14 @@ async function appendMovieList(listData) {
     console.timeEnd("fetch load check");
 
     await appendMovieList(finalData);
-    await createModal(finalData);
+    await createModal(finalData)
+    .then(datas =>{
+      datas.forEach((el,i)=>{
+        const newArray = [];
+        localStorageObject[i] = newArray;
+      })
+    });
+    console.log(localStorageObject)
   } catch (error) {
     console.log("에러 발생\n", error);
   }
