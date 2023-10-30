@@ -36,6 +36,7 @@
 
 #modalContent {
   position: relative;
+  display: grid;
   background-color: #ffffff;
   width: 485px;
   /* width: 700px; */
@@ -51,7 +52,7 @@
 }
 
 #modalContent img {
-  position: absolute;
+  /* position: absolute; */
   width: 400px;
   height: 600px;
   /* top: 50px; */
