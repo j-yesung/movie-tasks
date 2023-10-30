@@ -1,5 +1,3 @@
-import { localStorageObject } from '../js/app-test.js';
-
 let localStorageBox;
 let index;
 let localStorageArray = [];
@@ -206,8 +204,6 @@ function setGetLocalStorage(name, pwd, text, today) {
   //id 부여해줘야 나중에 delete, edit 해주려고
   const newLocalStorageArray = grantedId(localStorageArray);
 
-  console.log(localStorageBox);
-  console.log(localStorageBox[index]);
   localStorageBox[index] = newLocalStorageArray;
   const newLocalStorageObject = localStorageBox;
 
@@ -252,7 +248,7 @@ function printingTemplate(info) {
   info.forEach((data, i) => {
     // data-edit 값을 페이지 네이션작업 후 다시 넣었는데 이유는 수정버튼을 눌렀을 때 다시 localStorageArray의 값은
     const template = `
-        <li class="comment-container">
+      <li class="comment-container">
         <div class="comment-view">
           <div class="comment-view-container">
             <div class="comment-info">
@@ -270,7 +266,7 @@ function printingTemplate(info) {
           </div>
         </div>
       </li>
-        `;
+    `;
     $commentContainer.insertAdjacentHTML('beforeend', template);
   });
 
@@ -320,23 +316,23 @@ function editPrintingHtml(event) {
   const findedEditCommentContainer = document.querySelectorAll('.comment-container')[findedEditCommentContainerIndex];
   const template = `
     <li class="comment-container">
-    <div class="comment-view">
-      <div class="comment-view-container">
-        <div class="comment-info">
-          <div class="comment-info_firstName">
-          ${targetedLocalStorageData.name[0]}
-          </div>
-          <div class="comment-info_fullInfo">
-            <div class="comment-date">
-            ${targetedLocalStorageData.date}
+      <div class="comment-view">
+        <div class="comment-view-container">
+          <div class="comment-info">
+            <div class="comment-info_firstName">
+            ${targetedLocalStorageData.name[0]}
+            </div>
+            <div class="comment-info_fullInfo">
+              <div class="comment-date">
+              ${targetedLocalStorageData.date}
+              </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
-    </div>
-  </li>
-    `;
+    </li>
+  `;
 
   const editForm = cretaeCommentUpdateForm(targetLocalStorageIndex);
   findedEditCommentContainer.innerHTML = template;
@@ -463,4 +459,3 @@ export function grantedId(array) {
   });
   return array;
 }
-// export { initPrint, addCommentFunc, printingComment };

@@ -1,5 +1,4 @@
 import { createModal } from '../js/modal.js';
-
 const $header = document.querySelector('header');
 const $container = document.querySelector('.container');
 const $sortSelect = document.getElementById('sortingSelect');
@@ -12,6 +11,7 @@ const key = '98b425383d86d1c61535d64d720ee01e';
 const date = '20220101';
 const url1 = '../data/poster.json';
 const url2 = `http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${key}&targetDt=${date}`;
+const localStorageObject = {}; // localStorage의 각 배열에 담길 댓글들을 감싼 Object
 let finalData = [];
 
 /**
@@ -80,7 +80,17 @@ async function appendMovieList(listData) {
     console.timeEnd('fetch load check');
 
     await appendMovieList(finalData);
-    await createModal(finalData);
+    await createModal(finalData).then(datas => {
+      // 브라우저 키자마자 조건식으로 localStorage에 '몰래' 댓글모음집 담을 데이터 셋팅 해줘서, input.js에서 localStorage에 데이터가 있느니 없느니라는 귀찮은 조건식을 안써주게 함
+      if (localStorage.getItem('data') === null || localStorage.getItem('data') === undefined) {
+        datas.forEach((el, i) => {
+          const newArray = [];
+          localStorageObject[i] = newArray;
+        });
+
+        localStorage.setItem('data', JSON.stringify(localStorageObject));
+      }
+    });
   } catch (error) {
     console.log('에러 발생\n', error);
   }
