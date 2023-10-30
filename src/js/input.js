@@ -22,6 +22,7 @@ function render(i, currentPage = 1) {
   
   const datas = getLocalStorageData(i);
 
+  if (currentPage === 0) document.querySelector('.buttons .button').remove();
   localStorageArray = datas[i];
 
   grantedId(localStorageArray);
