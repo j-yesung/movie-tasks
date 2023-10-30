@@ -4,7 +4,6 @@ let localStorageBox;
 let index;
 let localStorageArray = [];
 
-
 export function initPrint(i) {
   index = i;
   // app-test.js에서 먼저 localStorage에 'data'라는 값이 없다면 오브젝트 배열을 set해주고 있으면 return 하는 식으로 하여서 initPrint안에서  localStorage에 'data'값이 있거나 없거나라는 조건 식을 사용해 줄 필요가 없다.
@@ -14,14 +13,11 @@ export function initPrint(i) {
   // datas의 i값(keym)의  value값(array)이 없다면 return 아니면 render()
   if (localStorageArray === null || localStorageArray === undefined) return;
 
-
   render(index);
 }
-                  // default로 currentPage= 1 함
+// default로 currentPage= 1 함
 function render(i, currentPage = 1) {
-  
   const datas = getLocalStorageData(i);
-
   if (currentPage === 0) document.querySelector('.buttons .button').remove();
   localStorageArray = datas[i];
 
@@ -206,13 +202,12 @@ function setGetLocalStorage(name, pwd, text, today) {
   // deleteEventFunc 때문에 추가한 조건문
   if (Object.keys(info).length === 0) return alert('다 채워넣자');
 
-  
   localStorageArray.unshift(info);
   //id 부여해줘야 나중에 delete, edit 해주려고
   const newLocalStorageArray = grantedId(localStorageArray);
- 
-  console.log(localStorageBox)
-  console.log(localStorageBox[index])
+
+  console.log(localStorageBox);
+  console.log(localStorageBox[index]);
   localStorageBox[index] = newLocalStorageArray;
   const newLocalStorageObject = localStorageBox;
 
@@ -227,13 +222,12 @@ function setGetLocalStorage(name, pwd, text, today) {
 function getLocalStorageData(i) {
   let getData = JSON.parse(localStorage.getItem('data'));
 
-  if(getData === null || getData === undefined) return 
- 
-  localStorageBox = getData;// 계속해서 최신화 하기 위해 일부러 localStorageBox =  getData라고 해주기 위함
-    
+  if (getData === null || getData === undefined) return;
 
-    localStorageArray = getData[i];
-    // getData[i]한 배열의 값이 없다면(당연히 댓글 쓰기 전 초기 값이겠지?) 그냥 231에서 참조형태로 변수에 담은 localStorageBox(object배열)만 return 시킨다.
+  localStorageBox = getData; // 계속해서 최신화 하기 위해 일부러 localStorageBox =  getData라고 해주기 위함
+
+  localStorageArray = getData[i];
+  // getData[i]한 배열의 값이 없다면(당연히 댓글 쓰기 전 초기 값이겠지?) 그냥 231에서 참조형태로 변수에 담은 localStorageBox(object배열)만 return 시킨다.
   if (localStorageArray === null || localStorageArray === undefined) return localStorageBox;
 
   // localStorageArray에 배열(댓글들이 저장되어있으면) 요소가 있으면 id값 부여해서 localStorageBox의 n번째 배열(댓글 모음집)을 다시 참조형태로 부여한다.
@@ -247,7 +241,6 @@ function setLocalStorage(data) {
   // 수정해야함
   const convertJson = JSON.stringify(data);
   localStorage.setItem('data', convertJson);
-  
 }
 
 // 실질적으로 local에서 받아와서 뿌리는 함수임
@@ -466,7 +459,7 @@ function deleteEvent(target, eventType, funcName) {
 // id 값 부여 하기
 export function grantedId(array) {
   array.forEach((data, i) => {
-    data.id= `${i}`;
+    data.id = `${i}`;
   });
   return array;
 }
