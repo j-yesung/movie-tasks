@@ -1,35 +1,37 @@
-import { initPrint, addCommentFunc } from '../js/input.js';
+import { initPrint, addCommentFunc } from "../js/input.js";
 
-const $modalContainer = document.getElementById('modalContainer');
-const $modalContent = document.getElementById('modalContent');
+const $modalContainer = document.getElementById("modalContainer");
+const $modalContent = document.getElementById("modalContent");
 
 // 관객수 표기
 function formatPopulation(number) {
-  const formatter = Intl.NumberFormat('ko', { notation: 'compact' });
+  const formatter = Intl.NumberFormat("ko", { notation: "compact" });
   return formatter.format(number);
 }
 // 매출액 표기
 function formatNumber(number) {
-  const formatter = Intl.NumberFormat('ko', {
-    style: 'currency',
-    currency: 'krw',
-    notation: 'compact',
+  const formatter = Intl.NumberFormat("ko", {
+    style: "currency",
+    currency: "krw",
+    notation: "compact",
   });
   return formatter.format(number);
 }
 
 // 모달 생성
 export async function createModal(modalData) {
-  const $cardInfo = document.querySelectorAll('.card');
+  const $cardInfo = document.querySelectorAll(".card");
 
-  $cardInfo.forEach(item => {
-    if (item.id !== 'logo') {
-      item.addEventListener('click', () => {
+  $cardInfo.forEach((item, i) => {
+    if (item.id !== "logo") {
+      item.addEventListener("click", () => {
         openModal(); // 모달 오픈
         const imgSrc = item.src;
-        const result = modalData.find(result => result.poster_path === imgSrc);
+        const result = modalData.find(
+          (result) => result.poster_path === imgSrc
+        );
 
-        $modalContent.innerHTML = ''; // 기존 내용 초기화
+        $modalContent.innerHTML = ""; // 기존 내용 초기화
 
         if (result) {
           $modalContent.innerHTML = `
@@ -81,47 +83,52 @@ export async function createModal(modalData) {
             <button id="modalCloseButton"></button>
           `;
           $modalContainer.appendChild($modalContent);
+          initPrint(i); // 댓글 오픈
         }
-        initPrint(); // 댓글 오픈
 
-        const $commentText = document.querySelector('.comment-text.add-comment');
-        const $formSubmitBtn = document.querySelector('.form-btn');
+        const $commentText = document.querySelector(
+          ".comment-text.add-comment"
+        );
+        const $formSubmitBtn = document.querySelector(".form-btn");
 
         // 코멘트 한글자라도 있으면 버튼 활성화,댓글 하나라도 있으면 전송버튼 활성화 시켜서 UX로 알려주자 - 전역으로 해줘야징 ㅎㅎ
-        $commentText.addEventListener('input', e => {
-          $commentText.value.trim() !== ''
-            ? $formSubmitBtn.classList.add('submit')
-            : $formSubmitBtn.classList.remove('submit');
+        $commentText.addEventListener("input", (e) => {
+          $commentText.value.trim() !== ""
+            ? $formSubmitBtn.classList.add("submit")
+            : $formSubmitBtn.classList.remove("submit");
         });
 
         // 댓글 달기
-        const $form = document.querySelector('.input-container');
-        $form.addEventListener('submit', addCommentFunc);
+        const $form = document.querySelector(".input-container");
+        $form.addEventListener("submit", addCommentFunc);
 
         // 모달 닫기
-        document.getElementById('modalCloseButton').addEventListener('click', () => {
-          closeModal();
-        });
+        document
+          .getElementById("modalCloseButton")
+          .addEventListener("click", () => {
+            closeModal();
+          });
       });
     }
   });
+  return modalData;
 }
 
 // 모달 ON/OFF
 export function closeModal() {
-  const $cardOtherBtn = document.querySelectorAll('.card');
+  const $cardOtherBtn = document.querySelectorAll(".card");
 
-  $modalContainer.classList.add('hidden');
-  $cardOtherBtn.forEach(otherItem => otherItem.classList.remove('active'));
+  $modalContainer.classList.add("hidden");
+  $cardOtherBtn.forEach((otherItem) => otherItem.classList.remove("active"));
 }
 function openModal() {
-  $modalContainer.classList.remove('hidden');
+  $modalContainer.classList.remove("hidden");
 }
 
 /**
  * 이벤트 리스너들
  */
-$modalContent.addEventListener('click', e => e.stopPropagation());
-document.addEventListener('click', e => {
+$modalContent.addEventListener("click", (e) => e.stopPropagation());
+document.addEventListener("click", (e) => {
   if (e.target === $modalContainer) closeModal();
 });
