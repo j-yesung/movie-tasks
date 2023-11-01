@@ -10,7 +10,7 @@ const defaultUrl = 'https://kobis.or.kr/common/mast/movie';
 const key = '98b425383d86d1c61535d64d720ee01e';
 const date = '20220101';
 const url1 = '../data/poster.json';
-const url2 = `http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${key}&targetDt=${date}`;
+const url2 = `https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=${key}&targetDt=${date}`;
 const localStorageObject = {}; // localStorage의 각 배열에 담길 댓글들을 감싼 Object
 let finalData = [];
 
